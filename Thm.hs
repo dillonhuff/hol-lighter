@@ -65,6 +65,9 @@ inst thm1 x t =
     False ->
       error $ "inst: bad arguments " ++ show thm1 ++ " " ++ show x ++ " " ++ show t
 
+ext t x =
+  thm [] (mkEq (mkLam x (mkApp t x)) t)
+
 instance Show Thm where
   show (Thm hs c) = showCommaList hs ++ " |- " ++ show c
 
