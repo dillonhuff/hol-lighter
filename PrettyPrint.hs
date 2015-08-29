@@ -7,10 +7,15 @@ ppr :: Term -> String
 ppr t = firstToMatch pprOptions t
 
 pprOptions =
-  [(pprBinop "=", matchesBinop isEq),
+  [(\t -> "T", \t -> t == mkT),
+   (\t -> "F", \t -> t == mkF),
+   (pprBinop "=", matchesBinop isEq),
    (pprBinop "\\/", matchesBinop (\t -> t == mkOr)),
    (pprBinop "/\\", matchesBinop (\t -> t == mkAnd)),
    (pprBinop "-->", matchesBinop (\t -> t == mkImp)),
+   (pprUnop "~", matchesUnop (\t -> t == mkNeg)),
+   (pprUnop "exists ", \t -> isApp t && (t == exists (snd $ decApp t))),
+   (pprUnop "forall ", \t -> isApp t && (t == forall (snd $ decApp t))),
    (show, isVar),
    (show, isCon),
    (pprApp, isApp),
@@ -43,8 +48,22 @@ matchesBinop m t =
        False -> False
    False -> False
 
+matchesUnop :: (Term -> Bool) -> Term -> Bool
+matchesUnop m t =
+  case isApp t of
+   True ->
+     let (a, b) = decApp t in
+      m a
+   False -> False
+
 pprBinop :: String -> Term -> String
 pprBinop bStr t =
   let (a, b) = decApp t
       (r, x) = decApp a in
    "(" ++ ppr x ++ " " ++ bStr ++ " " ++ ppr b ++ ")"
+
+pprUnop :: String -> Term -> String
+pprUnop uStr t =
+  let (a, b) = decApp t in
+   uStr ++ ppr b
+
