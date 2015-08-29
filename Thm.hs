@@ -57,6 +57,14 @@ antiSym thm1 thm2 =
       d = hyp thm2 in
    thm ((L.filter (\h -> h /= q) g) ++ (L.filter (\h -> h /= p) d)) (mkEq p q)
 
+inst thm1 x t =
+  let p = con thm1
+      hs = hyp thm1 in
+   case isVar x of
+    True -> thm (L.map (\h -> subVar x t h) hs) (subVar x t p)
+    False ->
+      error $ "inst: bad arguments " ++ show thm1 ++ " " ++ show x ++ " " ++ show t
+
 instance Show Thm where
   show (Thm hs c) = showCommaList hs ++ " |- " ++ show c
 

@@ -1,7 +1,9 @@
 module Term(Term,
             mkVar, mkCon, mkApp, mkLam, mkEq,
+            isVar,
             decEq,
             isFreeIn,
+            subVar,
             typeOf) where
 
 import Type
@@ -29,7 +31,22 @@ mkEq a b =
    True -> mkApp (mkApp (mkCon "=" (func (typeOf a) (func (typeOf a) o))) a) b
    False -> error $ "mkEq: arguments have different types " ++ show a ++ " " ++ show b
 
+isVar (Var _ _) = True
+isVar _ = False
+
 decEq (App (App (Con "=" t) a) b) = (a, b)
+
+subVar targ res c@(Con _ _) = c
+subVar targ res v@(Var _ _) =
+  case v == targ of
+   True -> res
+   False -> v
+subVar targ res (App a b) =
+  App (subVar targ res a) (subVar targ res b)
+subVar targ res (Lam v t) =
+  case v == targ of
+   True -> Lam v t
+   False -> Lam v (subVar targ res t)
 
 typeOf (Var _ t) = t
 typeOf (Con _ t) = t
