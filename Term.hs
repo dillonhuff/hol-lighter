@@ -1,7 +1,8 @@
 module Term(Term,
             mkVar, mkCon, mkApp, mkLam, mkEq,
-            isVar,
-            decEq,
+            isVar, isCon, isLam, isApp,
+            isEq, isConWithName,
+            decApp, decLam, decEq,
             isFreeIn,
             subVar,
             typeOf) where
@@ -31,10 +32,29 @@ mkEq a b =
    True -> mkApp (mkApp (mkCon "=" (func (typeOf a) (func (typeOf a) o))) a) b
    False -> error $ "mkEq: arguments have different types " ++ show a ++ " " ++ show b
 
+isEq t = isConWithName "=" t
+
+isConWithName n (Con s _) = n == s
+isConWithName _ _ = False
+
 isVar (Var _ _) = True
 isVar _ = False
 
+isCon (Con _ _) = True
+isCon _ = False
+
+isApp (App _ _) = True
+isApp _ = False
+
+isLam (Lam _ _) = True
+isLam _ = False
+
 decEq (App (App (Con "=" t) a) b) = (a, b)
+
+decApp (App a b) = (a, b)
+decApp t = error $ "decApp: bad argument " ++ show t
+
+decLam (Lam v t) = (v, t)
 
 subVar targ res c@(Con _ _) = c
 subVar targ res v@(Var _ _) =

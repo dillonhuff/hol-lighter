@@ -1,4 +1,5 @@
-module Logic(t, f, (/\), (-->), forall, exists, neg) where
+module Logic(mkT, mkF, mkAnd, mkOr, mkImp, mkForall, mkExists, mkNeg,
+             t, f, (/\), (\/), (-->), forall, exists, neg) where
 
 import Term
 import Type
