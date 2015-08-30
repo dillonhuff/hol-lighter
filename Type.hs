@@ -19,6 +19,7 @@ isFuncType _ = False
 rightType (Func _ r) = r
 
 leftType (Func l _) = l
+leftType t = error $ "leftType: " ++ show t
 
 instance Show Type where
   show O = "o"

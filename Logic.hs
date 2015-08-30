@@ -10,6 +10,12 @@ mkT =
 
 t = mkT
 
+mkF =
+  let x = mkVar "x" o in
+  mkEq (mkLam x t) (mkLam x x)
+
+f = mkF
+
 mkAnd =
   let p = mkVar "p" o
       q = mkVar "q" o
@@ -43,11 +49,6 @@ mkExists t =
 
 exists f =
   mkApp (mkExists $ leftType $ typeOf f) f
-
-mkF =
-  forall (mkLam (mkVar "P" o) (mkVar "P" o))
-
-f = mkF
 
 mkNeg =
   mkLam (mkVar "t" o) ((mkVar "t" o) --> mkF)

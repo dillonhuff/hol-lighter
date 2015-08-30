@@ -2,6 +2,7 @@ module Thm() where
 
 import Data.List as L
 
+import Logic
 import Term
 import Type
 
@@ -67,6 +68,24 @@ inst thm1 x t =
 
 ext t x =
   thm [] (mkEq (mkLam x (mkApp t x)) t)
+
+inf =
+  let f = mkVar "f" (func i i)
+      x = mkVar "x" i
+      x1 = mkVar "x1" i
+      x2 = mkVar "x2" i
+      y = mkVar "y" i
+      fx1 = mkApp f x1
+      fx2 = mkApp f x2
+      isInjective =
+        forall $ mkLam x1 $ forall $ mkLam x2 $ (mkEq fx1 fx2) --> (mkEq x1 x2)
+      isSurjective =
+        forall $ mkLam y $ exists $ mkLam x $ mkEq y (mkApp f x) in
+  thm [] (exists $ mkLam f (isInjective /\ (neg $ isSurjective)))
+
+choice p =
+  let x = mkVar "x" (leftType $ typeOf p) in
+   thm [] (forall $ mkLam x $ (mkApp p x) --> (mkApp p (c $ mkLam x $ mkApp p x)))
 
 instance Show Thm where
   show (Thm hs c) = showCommaList hs ++ " |- " ++ show c

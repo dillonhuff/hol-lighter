@@ -1,5 +1,5 @@
 module Term(Term,
-            mkVar, mkCon, mkApp, mkLam, mkEq,
+            mkVar, mkCon, mkApp, mkLam, mkEq, c,
             isVar, isCon, isLam, isApp,
             isEq, isConWithName,
             decApp, decLam, decEq,
@@ -31,6 +31,10 @@ mkEq a b =
   case typeOf a == typeOf b of
    True -> mkApp (mkApp (mkCon "=" (func (typeOf a) (func (typeOf a) o))) a) b
    False -> error $ "mkEq: arguments have different types " ++ show a ++ " " ++ show b
+
+c a =
+  case (isFuncType $ typeOf a) && (rightType (typeOf a) == o) of
+   True -> mkApp (mkCon "c" (func (typeOf a) (leftType $ typeOf a))) a
 
 isEq t = isConWithName "=" t
 

@@ -2,6 +2,7 @@ module PrettyPrint(ppr) where
 
 import Logic
 import Term
+import Type
 
 ppr :: Term -> String
 ppr t = firstToMatch pprOptions t
@@ -14,8 +15,8 @@ pprOptions =
    (pprBinop "/\\", matchesBinop (\t -> t == mkAnd)),
    (pprBinop "-->", matchesBinop (\t -> t == mkImp)),
    (pprUnop "~", matchesUnop (\t -> t == mkNeg)),
-   (pprUnop "exists ", \t -> isApp t && (t == exists (snd $ decApp t))),
-   (pprUnop "forall ", \t -> isApp t && (t == forall (snd $ decApp t))),
+   (pprUnop "exists ", \t -> isApp t && isFuncType (typeOf $ snd $ decApp t) && (t == exists (snd $ decApp t))),
+   (pprUnop "forall ", \t -> isApp t && isFuncType (typeOf $ snd $ decApp t) && (t == forall (snd $ decApp t))),
    (show, isVar),
    (show, isCon),
    (pprApp, isApp),
@@ -66,4 +67,3 @@ pprUnop :: String -> Term -> String
 pprUnop uStr t =
   let (a, b) = decApp t in
    uStr ++ ppr b
-
