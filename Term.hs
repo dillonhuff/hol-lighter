@@ -1,11 +1,12 @@
 module Term(Term,
-            mkVar, mkCon, mkApp, mkLam, mkEq, c,
+            mkVar, mkCon, mkApp, mkLam, c,
             isVar, isCon, isLam, isApp,
             isEq, isConWithName,
             decApp, decLam, decEq,
             isFreeIn,
             subVar,
-            typeOf) where
+            typeOf,
+            showWType) where
 
 import Type
 
@@ -27,14 +28,9 @@ mkLam v t =
    Var _ _ -> Lam v t
    _ -> error $ "mkLam: bad arguments " ++ show v ++ " " ++ show t
 
-mkEq a b =
-  case typeOf a == typeOf b of
-   True -> mkApp (mkApp (mkCon "=" (func (typeOf a) (func (typeOf a) o))) a) b
-   False -> error $ "mkEq: arguments have different types " ++ show a ++ " " ++ show b
-
-c a =
-  case (isFuncType $ typeOf a) && (rightType (typeOf a) == o) of
-   True -> mkApp (mkCon "c" (func (typeOf a) (leftType $ typeOf a))) a
+c a = error "c"
+  -- case (isFuncType $ typeOf a) && (rightType (typeOf a) == o) of
+  --  True -> mkApp (mkCon "c" (func (typeOf a) (leftType $ typeOf a))) a
 
 isEq t = isConWithName "=" t
 
@@ -79,6 +75,8 @@ typeOf (Lam v t) = func (typeOf v) (typeOf t)
 
 isFreeIn x t = error "isFreeIn"
 
+showWType :: Term -> String
+showWType (Var n t) = n ++ " : " ++ show t
 instance Show Term where
   show (Var n _) = n
   show (Con n _) = n

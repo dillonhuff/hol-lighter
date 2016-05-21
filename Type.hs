@@ -1,16 +1,14 @@
 module Type(Type,
-            o, i, func,
+            tp, func,
             isFuncType,
             leftType, rightType) where
 
 data Type
-  = O
-  | I
+  = T String
   | Func Type Type
     deriving (Eq, Ord)
 
-o = O
-i = I
+tp s = T s
 func l r = Func l r
 
 isFuncType (Func _ _) = True
@@ -22,7 +20,6 @@ leftType (Func l _) = l
 leftType t = error $ "leftType: " ++ show t
 
 instance Show Type where
-  show O = "o"
-  show I = "i"
+  show (T s) = s
   show (Func l r) = "(" ++ show r ++ show l ++ ")"
 

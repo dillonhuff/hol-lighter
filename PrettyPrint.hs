@@ -28,7 +28,7 @@ pprApp t =
 
 pprLam t =
   let (v, a) = decLam t in
-   "(\\" ++ ppr v ++ ". " ++ ppr a ++ ")"
+   "(\\" ++ (showWType v) ++ ". " ++ ppr a ++ ")"
 
 firstToMatch :: [(a -> b, a -> Bool)] -> a -> b
 firstToMatch [] a = error "firstToMatch: out of options"
